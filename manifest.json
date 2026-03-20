@@ -1,0 +1,18 @@
+{
+  "name": "YT Zusammenfasser",
+  "short_name": "YT Summary",
+  "description": "YouTube Transcript Zusammenfassung mit Claude AI",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff0000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23ff0000'/><polygon points='40,30 75,50 40,70' fill='white'/></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
