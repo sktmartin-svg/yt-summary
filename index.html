@@ -451,24 +451,28 @@
   }
 
   function extractCaptionsURL(html) {
-    const marker = '"captionTracks":';
-    const idx = html.indexOf(marker);
-    if (idx === -1) return null;
+    function unescape(s) {
+      return s.replace(/\\u0026/g, '&').replace(/\\u003d/g, '=')
+              .replace(/\\u003c/g, '<').replace(/\\u003e/g, '>');
+    }
 
-    const slice = html.slice(idx + marker.length);
-    const urlMarker = '"baseUrl":"';
-    const ui = slice.indexOf(urlMarker);
-    if (ui === -1) return null;
+    // Methode 1: Regex direkt auf captionTracks
+    const m1 = html.match(/"captionTracks"\s*:\s*\[.*?"baseUrl"\s*:\s*"([^"]+)"/);
+    if (m1) return unescape(m1[1]);
 
-    const start = ui + urlMarker.length;
-    const end = slice.indexOf('"', start);
-    if (end === -1) return null;
+    // Methode 2: Direkt nach timedtext-URL suchen
+    const m2 = html.match(/"(https:\\\/\\\/www\.youtube\.com\\\/api\\\/timedtext[^"]+)"/);
+    if (m2) return unescape(m2[1].replace(/\\\//g, '/'));
 
-    return slice.slice(start, end)
-      .replace(/\\u0026/g, '&')
-      .replace(/\\u003d/g, '=')
-      .replace(/\\u003c/g, '<')
-      .replace(/\\u003e/g, '>');
+    // Methode 3: baseUrl in der Nähe von captionTracks
+    const idx = html.indexOf('"captionTracks"');
+    if (idx !== -1) {
+      const chunk = html.slice(idx, idx + 2000);
+      const m3 = chunk.match(/"baseUrl"\s*:\s*"([^"]+)"/);
+      if (m3) return unescape(m3[1]);
+    }
+
+    return null;
   }
 
   function parseCaptionXML(xml) {
